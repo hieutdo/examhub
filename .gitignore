@@ -1,0 +1,44 @@
+# Mac OSX
+.DS_Store
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Intellij
+.idea
+*.iml
+
+# Eclipse
+.settings
+.project
+.classpath
+.metadata
+.loadpath
+.springBeans
+
+# Others
+target
+log
+
+.gradle
+.svn
+.cproject
+.buildpath
+.externalToolBuilders/**
+.merge_file*
+
+*.log
+*.tmp
+*.bak
+*.swp
+*~.nib
+*.launch
+*.jar
+*.war
+*.ear
+*.db
+
+rebel.xml

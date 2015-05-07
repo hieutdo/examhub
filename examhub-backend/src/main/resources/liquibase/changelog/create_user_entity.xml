@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="Hieudt (generated)" id="1430964497686-1">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+    <changeSet author="Hieudt (generated)" id="1430964497686-2">
+        <createTable tableName="exb_users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="exb_usersPK"/>
+            </column>
+            <column name="email" type="VARCHAR(100)"/>
+            <column name="first_name" type="VARCHAR(50)"/>
+            <column name="is_activated" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(50)"/>
+            <column name="password" type="VARCHAR(100)"/>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hieudt (generated)" id="1430964497686-3">
+        <addUniqueConstraint columnNames="email" constraintName="UC_EXB_USERSEMAIL_COL" deferrable="false" disabled="false" initiallyDeferred="false" tableName="exb_users"/>
+    </changeSet>
+    <changeSet author="Hieudt (generated)" id="1430964497686-4">
+        <addUniqueConstraint columnNames="username" constraintName="UC_EXB_USERSUSERNAME_COL" deferrable="false" disabled="false" initiallyDeferred="false" tableName="exb_users"/>
+    </changeSet>
+</databaseChangeLog>
