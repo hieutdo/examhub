@@ -21,7 +21,7 @@
         <postgresql.version>9.4-1201-jdbc41</postgresql.version>
         <liquibase.version>3.3.2</liquibase.version>
         <liquibase-hibernate4.version>3.5</liquibase-hibernate4.version>
-        <maven.build.timestamp.format>yyyy-MM-dd-HH:mm:ss</maven.build.timestamp.format>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     </properties>
 
     <dependencies>
