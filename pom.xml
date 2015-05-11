@@ -16,10 +16,6 @@
         <version>1.2.3.RELEASE</version>
     </parent>
 
-    <properties>
-        <spring.boot.version>1.2.3.RELEASE</spring.boot.version>
-    </properties>
-
     <modules>
         <module>examhub-backend</module>
     </modules>
