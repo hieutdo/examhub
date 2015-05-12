@@ -47,12 +47,18 @@ public class UserResourceTest {
         user1.setUsername("user1");
         user1.setFirstName("john");
         user1.setLastName("doe");
+        user1.setPassword("123456");
+        user1.setEmail("user1@mail.com");
+        user1.setIsActivated(true);
 
         User user2 = new User();
         user2.setId(2L);
         user2.setUsername("user2");
         user2.setFirstName("jane");
         user2.setLastName("doe");
+        user2.setPassword("654321");
+        user2.setEmail("user2@mail.com");
+        user2.setIsActivated(false);
 
         when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
 
@@ -64,10 +70,12 @@ public class UserResourceTest {
             .andExpect(jsonPath("$[0].username", is("user1")))
             .andExpect(jsonPath("$[0].firstName", is("john")))
             .andExpect(jsonPath("$[0].lastName", is("doe")))
+            .andExpect(jsonPath("$[0].email", is("user1@mail.com")))
             .andExpect(jsonPath("$[1].id", is(2)))
             .andExpect(jsonPath("$[1].username", is("user2")))
             .andExpect(jsonPath("$[1].firstName", is("jane")))
-            .andExpect(jsonPath("$[1].lastName", is("doe")));
+            .andExpect(jsonPath("$[1].lastName", is("doe")))
+            .andExpect(jsonPath("$[1].email", is("user2@mail.com")));
 
         verify(userRepository, times(1)).findAll();
         verifyNoMoreInteractions(userRepository);

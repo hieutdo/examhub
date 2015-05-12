@@ -1,11 +1,17 @@
 package org.examhub.repository;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
+import org.examhub.ExamHubApplication;
 import org.examhub.domain.User;
-import org.examhub.test.AbstractBaseIntegrationTest;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import java.util.List;
 
@@ -15,8 +21,15 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Hieu Do
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = ExamHubApplication.class)
+@TestExecutionListeners({
+    DependencyInjectionTestExecutionListener.class,
+    DbUnitTestExecutionListener.class
+})
 @DatabaseSetup("users.xml")
-public class UserRepositoryIT extends AbstractBaseIntegrationTest {
+@SuppressWarnings("unchecked")
+public class UserRepositoryIT {
 
     @Autowired
     private UserRepository userRepository;
@@ -28,9 +41,12 @@ public class UserRepositoryIT extends AbstractBaseIntegrationTest {
         assertThat(user, notNullValue());
         assertThat(user, allOf(
             hasProperty("id", is(1L)),
+            hasProperty("username", is("nrichards0")),
+            hasProperty("password", is("7KawtUguX")),
             hasProperty("firstName", is("Nancy")),
             hasProperty("lastName", is("Richards")),
-            hasProperty("email", is("nrichards0@hc360.com"))
+            hasProperty("email", is("nrichards0@hc360.com")),
+            hasProperty("activated", is(true))
         ));
     }
 
@@ -39,7 +55,7 @@ public class UserRepositoryIT extends AbstractBaseIntegrationTest {
         List<User> users = userRepository.findAll();
 
         assertThat(users.size(), is(5));
-        assertThat(users, containsInAnyOrder(
+        assertThat(users, contains(
             allOf(
                 hasProperty("id", is(1L)),
                 hasProperty("username", is("nrichards0"))
