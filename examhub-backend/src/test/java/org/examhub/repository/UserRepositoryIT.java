@@ -1,21 +1,11 @@
 package org.examhub.repository;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import org.examhub.ExamHubApplication;
+import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import org.examhub.domain.User;
+import org.examhub.test.AbstractBaseIntegrationTest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.util.List;
 
@@ -25,42 +15,57 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Hieu Do
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ExamHubApplication.class)
-@TestExecutionListeners({
-    DependencyInjectionTestExecutionListener.class,
-    DirtiesContextTestExecutionListener.class,
-    TransactionalTestExecutionListener.class,
-    DbUnitTestExecutionListener.class})
-@DatabaseSetup(UserRepositoryIT.DATASET)
-@DatabaseTearDown(type = DatabaseOperation.DELETE_ALL, value = { UserRepositoryIT.DATASET })
-@DirtiesContext
-public class UserRepositoryIT {
-
-    protected static final String DATASET = "classpath:datasets/it-users.xml";
+@DatabaseSetup("users.xml")
+public class UserRepositoryIT extends AbstractBaseIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    public void findOneByUsername_ShouldReturnExistingUser() throws Exception {
-        User user = userRepository.findOneByUsername("user1");
+    public void findOneByUsername_ShouldReturnAnExistingUser() throws Exception {
+        User user = userRepository.findOneByUsername("nrichards0");
 
         assertThat(user, notNullValue());
+        assertThat(user, allOf(
+            hasProperty("id", is(1L)),
+            hasProperty("firstName", is("Nancy")),
+            hasProperty("lastName", is("Richards")),
+            hasProperty("email", is("nrichards0@hc360.com"))
+        ));
     }
 
     @Test
-    public void findAll_TwoUsersFound_ShouldReturnAListOfTwoUsers() throws Exception {
+    public void findAll_FiveUsersFound_ShouldReturnAListOfFiveUsers() throws Exception {
         List<User> users = userRepository.findAll();
 
-        assertThat(users.size(), is(1));
-        assertThat(users, contains(
+        assertThat(users.size(), is(5));
+        assertThat(users, containsInAnyOrder(
             allOf(
                 hasProperty("id", is(1L)),
-                hasProperty("username", is("user1")),
-                hasProperty("firstName", is("john")),
-                hasProperty("lastName", is("doe"))
+                hasProperty("username", is("nrichards0"))
+            ),
+            allOf(
+                hasProperty("id", is(2L)),
+                hasProperty("username", is("vwashington1"))
+            ),
+            allOf(
+                hasProperty("id", is(3L)),
+                hasProperty("username", is("apeters2"))
+            ),
+            allOf(
+                hasProperty("id", is(4L)),
+                hasProperty("username", is("nmartin3"))
+            ),
+            allOf(
+                hasProperty("id", is(5L)),
+                hasProperty("username", is("tcarr4"))
             )
         ));
+    }
+
+    @Test
+    @ExpectedDatabase(value = "users-after-delete.xml", table = User.TABLE_NAME)
+    public void delete_ShouldDeleteAnExistingUser() throws Exception {
+        userRepository.delete(5L);
     }
 }

@@ -14,8 +14,9 @@ import java.io.Serializable;
  * @author Hieu Do
  */
 @Entity
-@Table(name = Constants.JPA_TABLE_PREFIX + "users")
+@Table(name = User.TABLE_NAME)
 public class User implements Serializable {
+    public static final String TABLE_NAME = Constants.JPA_TABLE_PREFIX + "users";
 
     private static final long serialVersionUID = 5672765218653756757L;
 

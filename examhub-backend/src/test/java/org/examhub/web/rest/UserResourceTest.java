@@ -41,7 +41,7 @@ public class UserResourceTest {
     }
 
     @Test
-    public void findAll_shouldReturnExistingUsers() throws Exception {
+    public void findAll_ShouldReturnExistingUsers() throws Exception {
         User user1 = new User();
         user1.setId(1L);
         user1.setUsername("user1");
