@@ -35,7 +35,7 @@ public class UserRepositoryIT {
     private UserRepository userRepository;
 
     @Test
-    public void findOneByUsername_ShouldReturnAnExistingUser() throws Exception {
+    public void findOneByUsername_GivenAnUserHasUsernameXInDatabase_WhenXIsUsedToQuery_ThenReturnAnUserObjectThatHasUsernameX() throws Exception {
         User user = userRepository.findOneByUsername("nrichards0");
 
         assertThat(user, notNullValue());
@@ -51,7 +51,7 @@ public class UserRepositoryIT {
     }
 
     @Test
-    public void findAll_FiveUsersFound_ShouldReturnAListOfFiveUsers() throws Exception {
+    public void findAll_GivenFiveUsersInDatabase_ThenReturnAListOfFiveUserObjects() throws Exception {
         List<User> users = userRepository.findAll();
 
         assertThat(users.size(), is(5));
@@ -81,7 +81,9 @@ public class UserRepositoryIT {
 
     @Test
     @ExpectedDatabase(value = "users-after-delete.xml", table = User.TABLE_NAME)
-    public void delete_ShouldDeleteAnExistingUser() throws Exception {
-        userRepository.delete(5L);
+    public void delete_GivenFiveUsersInDatabase_WhenAnUserHasIdXIsDeleted_ThenThereIsNoUserHasIdXInDatabase() throws Exception {
+        long userId = 5L;
+        userRepository.delete(userId);
+        assertThat(userRepository.findOne(userId), is(nullValue()));
     }
 }
