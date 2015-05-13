@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="hdo9 (generated)" id="1431514664097-1">
+        <createTable tableName="exb_roles">
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(200)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hdo9 (generated)" id="1431514664097-2">
+        <createTable tableName="exb_users_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hdo9 (generated)" id="1431514664097-3">
+        <addPrimaryKey columnNames="user_id, role_name" tableName="exb_users_roles"/>
+    </changeSet>
+    <changeSet author="hdo9 (generated)" id="1431514664097-4">
+        <addPrimaryKey columnNames="name" constraintName="exb_rolesPK" tableName="exb_roles"/>
+    </changeSet>
+    <changeSet author="hdo9 (generated)" id="1431514664097-5">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="exb_users_roles" constraintName="FK_3ujvx4eenotr0h2a0eacogbrj" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exb_users"/>
+    </changeSet>
+    <changeSet author="hdo9 (generated)" id="1431514664097-6">
+        <addForeignKeyConstraint baseColumnNames="role_name" baseTableName="exb_users_roles" constraintName="FK_rfdd6xqqqt73cf98qe5yfmr0e" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="exb_roles"/>
+    </changeSet>
+</databaseChangeLog>

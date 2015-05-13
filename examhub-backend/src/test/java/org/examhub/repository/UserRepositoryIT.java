@@ -1,9 +1,11 @@
 package org.examhub.repository;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import org.examhub.ExamHubApplication;
+import org.examhub.domain.Role;
 import org.examhub.domain.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,7 +28,7 @@ import static org.junit.Assert.assertThat;
 @SpringApplicationConfiguration(classes = ExamHubApplication.class)
 @TestExecutionListeners({
     DependencyInjectionTestExecutionListener.class,
-    DbUnitTestExecutionListener.class
+    TransactionDbUnitTestExecutionListener.class
 })
 @DatabaseSetup("users.xml")
 @SuppressWarnings("unchecked")
@@ -35,6 +38,7 @@ public class UserRepositoryIT {
     private UserRepository userRepository;
 
     @Test
+    @Transactional
     public void findOneByUsername_GivenAnUserHasUsernameXInDatabase_WhenXIsUsedToQuery_ThenReturnAnUserObjectThatHasUsernameX() throws Exception {
         User user = userRepository.findOneByUsername("nrichards0");
 
@@ -46,7 +50,8 @@ public class UserRepositoryIT {
             hasProperty("firstName", is("Nancy")),
             hasProperty("lastName", is("Richards")),
             hasProperty("email", is("nrichards0@hc360.com")),
-            hasProperty("activated", is(true))
+            hasProperty("activated", is(true)),
+            hasProperty("roles", contains(is(new Role("ROLE_ADMIN")), is(new Role("ROLE_USER"))))
         ));
     }
 

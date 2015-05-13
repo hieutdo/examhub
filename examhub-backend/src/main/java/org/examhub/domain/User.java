@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Hieu Do
@@ -51,6 +53,13 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private boolean isActivated = false;
+
+    @ManyToMany
+    @JoinTable(
+        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "role_name", referencedColumnName = "name")}
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -108,6 +117,14 @@ public class User implements Serializable {
         this.isActivated = isActivated;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -137,6 +154,7 @@ public class User implements Serializable {
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
             ", isActivated=" + isActivated +
+            ", roles=" + roles +
             '}';
     }
 }
