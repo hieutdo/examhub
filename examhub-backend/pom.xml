@@ -80,8 +80,7 @@
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
-                            </jvmArguments>
+                            <jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</jvmArguments>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -189,21 +188,6 @@
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                 </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>summary</report>
-                            <report>index</report>
-                            <report>dependencies</report>
-                            <report>project-team</report>
-                            <report>license</report>
-                            <report>scm</report>
-                            <report>cim</report>
-                            <report>mailing-list</report>
-                            <report>issue-tracking</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
