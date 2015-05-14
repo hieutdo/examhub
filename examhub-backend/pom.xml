@@ -157,14 +157,14 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>${liquibase.version}</version>
                 <configuration>
-                    <changeLogFile>src/main/resources/liquibase/changelog-master.xml</changeLogFile>
-                    <diffChangeLogFile>src/main/resources/liquibase/changelog/${maven.build.timestamp}_changelog.xml
+                    <changeLogFile>src/main/resources/liquibase/db.changelog.xml</changeLogFile>
+                    <diffChangeLogFile>src/main/resources/liquibase/auto_generated_changelog_${maven.build.timestamp}.xml
                     </diffChangeLogFile>
                     <driver>org.postgresql.Driver</driver>
                     <url>jdbc:postgresql://localhost:5432/examhub</url>
                     <username>examhub</username>
                     <password>examhub</password>
-                    <referenceUrl>hibernate:spring:org.examhub.domain?dialect=org.hibernate.dialect.PostgreSQL82Dialect&amp;hibernate.ejb.naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy</referenceUrl>
+                    <referenceUrl>hibernate:spring:org.examhub.domain?dialect=org.hibernate.dialect.PostgreSQL82Dialect&amp;hibernate.ejb.naming_strategy=org.hibernate.cfg.EJB3NamingStrategy</referenceUrl>
                     <verbose>true</verbose>
                     <logging>debug</logging>
                 </configuration>

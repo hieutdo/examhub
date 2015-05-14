@@ -1,13 +1,6 @@
 package org.examhub.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.examhub.config.Constants;
-import org.hibernate.validator.constraints.Email;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,43 +9,18 @@ import java.util.Set;
  * @author Hieu Do
  */
 @Entity
-@Table(name = User.TABLE_NAME)
 public class User implements Serializable {
-    public static final String TABLE_NAME = Constants.JPA_TABLE_PREFIX + "users";
-
     private static final long serialVersionUID = 5672765218653756757L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
-    @Pattern(regexp = "^[a-z0-9_]*$")
-    @Size(min = 3, max = 50)
     @Column(length = 50, unique = true, nullable = false)
     private String username;
 
-    @JsonIgnore
-    @NotNull
-    @Size(min = 6, max = 100)
     @Column(length = 100)
     private String password;
-
-    @Size(max = 50)
-    @Column(length = 50)
-    private String firstName;
-
-    @Size(max = 50)
-    @Column(length = 50)
-    private String lastName;
-
-    @Email
-    @Size(max = 100)
-    @Column(length = 100, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private boolean isActivated = false;
 
     @ManyToMany
     @JoinTable(
@@ -85,38 +53,6 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean isActivated() {
-        return isActivated;
-    }
-
-    public void setIsActivated(boolean isActivated) {
-        this.isActivated = isActivated;
-    }
-
     public Set<Role> getRoles() {
         return roles;
     }
@@ -127,21 +63,20 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         User user = (User) o;
 
-        return username.equals(user.username);
+        if (id != null ? !id.equals(user.id) : user.id != null) return false;
+        return !(username != null ? !username.equals(user.username) : user.username != null);
     }
 
     @Override
     public int hashCode() {
-        return username.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -150,10 +85,6 @@ public class User implements Serializable {
             "id=" + id +
             ", username='" + username + '\'' +
             ", password='" + password + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", isActivated=" + isActivated +
             ", roles=" + roles +
             '}';
     }

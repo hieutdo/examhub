@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet id="create-user-system" author="hdo9">
+        <insert tableName="User">
+            <column name="id">1</column>
+            <column name="username">system</column>
+            <column name="password">$2a$10$.Q3on.ZoSQdGNfUiB6L1te5pqnt9J3p9n0xDqaZjjIuKAcEiAgyn2</column>
+        </insert>
+    </changeSet>
+    <changeSet id="create-user-admin" author="hdo9">
+        <insert tableName="User">
+            <column name="id">2</column>
+            <column name="username">admin</column>
+            <column name="password">$2a$10$LOCZ2bhFoWN1ASlHETnz8OUQosoiH3PK2KbFUhHbTIEMZr97ouQLa</column>
+        </insert>
+    </changeSet>
+    <changeSet id="create-user-user" author="hdo9">
+        <insert tableName="User">
+            <column name="id">3</column>
+            <column name="username">user</column>
+            <column name="password">$2a$10$p3aBBYOAp9CIFGCO9w/BPeJMmhZK2RJsKE5R0YQhldVCh4mfa2wly</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
