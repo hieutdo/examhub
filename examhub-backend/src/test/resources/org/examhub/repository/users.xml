@@ -9,6 +9,7 @@
     <exb_users id="5" first_name="Theresa" last_name="Martin" username="tcarr4" password="9mC3m1XuYVy0" email="tcarr4@live.com" is_activated="false"/>
 
     <exb_users_roles user_id="1" role_name="ROLE_ADMIN" />
+    <exb_users_roles user_id="1" role_name="ROLE_USER" />
     <exb_users_roles user_id="2" role_name="ROLE_ADMIN" />
     <exb_users_roles user_id="3" role_name="ROLE_USER" />
     <exb_users_roles user_id="4" role_name="ROLE_USER" />

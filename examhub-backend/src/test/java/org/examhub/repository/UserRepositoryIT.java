@@ -1,6 +1,5 @@
 package org.examhub.repository;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
@@ -37,8 +36,8 @@ public class UserRepositoryIT {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
     @Transactional
+    @Test
     public void findOneByUsername_GivenAnUserHasUsernameXInDatabase_WhenXIsUsedToQuery_ThenReturnAnUserObjectThatHasUsernameX() throws Exception {
         User user = userRepository.findOneByUsername("nrichards0");
 
@@ -51,7 +50,7 @@ public class UserRepositoryIT {
             hasProperty("lastName", is("Richards")),
             hasProperty("email", is("nrichards0@hc360.com")),
             hasProperty("activated", is(true)),
-            hasProperty("roles", contains(is(new Role("ROLE_ADMIN")), is(new Role("ROLE_USER"))))
+            hasProperty("roles", containsInAnyOrder(new Role("ROLE_ADMIN"), new Role("ROLE_USER")))
         ));
     }
 
