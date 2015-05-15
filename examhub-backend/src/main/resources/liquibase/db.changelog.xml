@@ -5,11 +5,10 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <!-- Schema -->
-    <include file="liquibase/schema/create_user_entity.xml"/>
-    <include file="liquibase/schema/create_role_entity.xml"/>
+    <include file="liquibase/schema/create_UserAccount_Authority_entities.xml"/>
 
     <!-- Data -->
     <include file="liquibase/data/create_default_users.xml"/>
-    <include file="liquibase/data/create_default_roles.xml"/>
-    <include file="liquibase/data/create_user_role_mappings.xml"/>
+    <include file="liquibase/data/create_default_authorities.xml"/>
+    <include file="liquibase/data/create_user_authorities.xml"/>
 </databaseChangeLog>

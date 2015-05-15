@@ -1,7 +1,7 @@
 package org.examhub.web.rest;
 
-import org.examhub.domain.User;
-import org.examhub.repository.UserRepository;
+import org.examhub.domain.UserAccount;
+import org.examhub.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,17 +14,17 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1")
-public class UserResource {
+public class UserAccountResource {
 
-    private final UserRepository userRepository;
+    private final UserAccountRepository userAccountRepository;
 
     @Autowired
-    public UserResource(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserAccountResource(UserAccountRepository userAccountRepository) {
+        this.userAccountRepository = userAccountRepository;
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserAccount> findAll() {
+        return userAccountRepository.findAll();
     }
 }

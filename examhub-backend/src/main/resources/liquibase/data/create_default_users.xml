@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
-    <changeSet id="create-user-system" author="hdo9">
-        <insert tableName="User">
+    <changeSet id="create-default-users" author="hdo9">
+        <insert tableName="user_account">
             <column name="id">1</column>
             <column name="username">system</column>
-            <column name="password">$2a$10$.Q3on.ZoSQdGNfUiB6L1te5pqnt9J3p9n0xDqaZjjIuKAcEiAgyn2</column>
+            <column name="password">$2a$08$DRe6irPk4ddsuGDokATuw.mTnVCIHnVt1STR2YtuVb0SzwJHvjh3.</column>
+            <column name="is_account_non_expired">true</column>
+            <column name="is_account_non_locked">true</column>
+            <column name="is_credentials_non_expired">true</column>
+            <column name="is_enabled">true</column>
         </insert>
-    </changeSet>
-    <changeSet id="create-user-admin" author="hdo9">
-        <insert tableName="User">
+        <insert tableName="user_account">
             <column name="id">2</column>
             <column name="username">admin</column>
-            <column name="password">$2a$10$LOCZ2bhFoWN1ASlHETnz8OUQosoiH3PK2KbFUhHbTIEMZr97ouQLa</column>
+            <column name="password">$2a$08$gYN35i.P3XZ57QAETrF/ue.nwSA7mAwl0F63VHFC/oiNdEbFFkazq</column>
+            <column name="is_account_non_expired">true</column>
+            <column name="is_account_non_locked">true</column>
+            <column name="is_credentials_non_expired">true</column>
+            <column name="is_enabled">true</column>
         </insert>
-    </changeSet>
-    <changeSet id="create-user-user" author="hdo9">
-        <insert tableName="User">
+        <insert tableName="user_account">
             <column name="id">3</column>
             <column name="username">user</column>
-            <column name="password">$2a$10$p3aBBYOAp9CIFGCO9w/BPeJMmhZK2RJsKE5R0YQhldVCh4mfa2wly</column>
+            <column name="password">$2a$08$GEZLuP5PFj7THNZKolddz.1voaMKWJJUqwCQ88V6/cTqZssab.ety</column>
+            <column name="is_account_non_expired">true</column>
+            <column name="is_account_non_locked">true</column>
+            <column name="is_credentials_non_expired">true</column>
+            <column name="is_enabled">true</column>
         </insert>
     </changeSet>
 </databaseChangeLog>
