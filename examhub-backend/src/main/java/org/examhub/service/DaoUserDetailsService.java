@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Hieu Do
  */
 @Service
-@Transactional
-public class UserAccountService implements UserDetailsService {
+public class DaoUserDetailsService implements UserDetailsService {
+
     @Autowired
     private UserAccountRepository userAccountRepository;
 
@@ -23,8 +23,9 @@ public class UserAccountService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserAccount userAccount = userAccountRepository.findByUsernameIgnoreCase(username);
         if (userAccount == null) {
-            throw new UsernameNotFoundException("No user " + username + " found in database");
+            throw new UsernameNotFoundException("Username " + username + " was not found in database");
         }
+        // eagerly load the Authority collection
         userAccount.getAuthorities().size();
         return userAccount;
     }

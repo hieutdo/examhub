@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
-    <changeSet author="hdo9 (generated)" id="1431675005530-1">
+    <changeSet author="Hieudt (generated)" id="1431914540605-1">
         <createSequence sequenceName="hibernate_sequence"/>
     </changeSet>
-    <changeSet author="hdo9 (generated)" id="1431675005530-2">
+    <changeSet author="Hieudt (generated)" id="1431914540605-2">
         <createTable tableName="authority">
             <column name="name" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="hdo9 (generated)" id="1431675005530-3">
+    <changeSet author="Hieudt (generated)" id="1431914540605-3">
         <createTable tableName="user_account">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="user_accountPK"/>
             </column>
-            <column name="is_account_non_expired" type="BOOLEAN">
+            <column name="account_non_expired" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_account_non_locked" type="BOOLEAN">
+            <column name="account_non_locked" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_credentials_non_expired" type="BOOLEAN">
+            <column name="activated" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_enabled" type="BOOLEAN">
+            <column name="credentials_non_expired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column name="password" type="VARCHAR(255)">
@@ -35,7 +38,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="hdo9 (generated)" id="1431675005530-4">
+    <changeSet author="Hieudt (generated)" id="1431914540605-4">
         <createTable tableName="user_authority">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -45,19 +48,19 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="hdo9 (generated)" id="1431675005530-5">
+    <changeSet author="Hieudt (generated)" id="1431914540605-5">
         <addPrimaryKey columnNames="user_id, authority_name" tableName="user_authority"/>
     </changeSet>
-    <changeSet author="hdo9 (generated)" id="1431675005530-6">
+    <changeSet author="Hieudt (generated)" id="1431914540605-6">
         <addPrimaryKey columnNames="name" constraintName="authorityPK" tableName="authority"/>
     </changeSet>
-    <changeSet author="hdo9 (generated)" id="1431675005530-7">
+    <changeSet author="Hieudt (generated)" id="1431914540605-7">
         <addUniqueConstraint columnNames="username" constraintName="UC_USER_ACCOUNTUSERNAME_COL" deferrable="false" disabled="false" initiallyDeferred="false" tableName="user_account"/>
     </changeSet>
-    <changeSet author="hdo9 (generated)" id="1431675005530-8">
+    <changeSet author="Hieudt (generated)" id="1431914540605-8">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_authority" constraintName="FK_5losscgu02yaej7prap7o6g5s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user_account"/>
     </changeSet>
-    <changeSet author="hdo9 (generated)" id="1431675005530-9">
+    <changeSet author="Hieudt (generated)" id="1431914540605-9">
         <addForeignKeyConstraint baseColumnNames="authority_name" baseTableName="user_authority" constraintName="FK_tnnyxjpcvg2aj0d0i6ufnabm2" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="authority"/>
     </changeSet>
 </databaseChangeLog>

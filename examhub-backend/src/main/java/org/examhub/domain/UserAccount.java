@@ -27,16 +27,19 @@ public class UserAccount implements UserDetails, Serializable {
     private String password;
 
     @Column(nullable = false)
-    private boolean isAccountNonExpired;
+    private boolean accountNonExpired;
 
     @Column(nullable = false)
-    private boolean isAccountNonLocked;
+    private boolean accountNonLocked;
 
     @Column(nullable = false)
-    private boolean isCredentialsNonExpired;
+    private boolean credentialsNonExpired;
 
     @Column(nullable = false)
-    private boolean isEnabled;
+    private boolean enabled;
+
+    @Column(nullable = false)
+    private boolean activated;
 
     @ManyToMany
     @JoinTable(
@@ -74,42 +77,50 @@ public class UserAccount implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isAccountNonExpired;
+        return accountNonExpired;
     }
 
-    public void setIsAccountNonExpired(boolean isAccountNonExpired) {
-        this.isAccountNonExpired = isAccountNonExpired;
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isAccountNonLocked;
+        return accountNonLocked;
     }
 
-    public void setIsAccountNonLocked(boolean isAccountNonLocked) {
-        this.isAccountNonLocked = isAccountNonLocked;
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isCredentialsNonExpired;
+        return credentialsNonExpired;
     }
 
-    public void setIsCredentialsNonExpired(boolean isCredentialsNonExpired) {
-        this.isCredentialsNonExpired = isCredentialsNonExpired;
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
-    public void setIsEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Set<Authority> getAuthorities() {
         return authorities;
     }
 
@@ -119,8 +130,12 @@ public class UserAccount implements UserDetails, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         UserAccount that = (UserAccount) o;
 
@@ -137,11 +152,12 @@ public class UserAccount implements UserDetails, Serializable {
         return "UserAccount{" +
             "id=" + id +
             ", username='" + username + '\'' +
-            ", password='" + password + '\'' +
-            ", isAccountNonExpired=" + isAccountNonExpired +
-            ", isAccountNonLocked=" + isAccountNonLocked +
-            ", isCredentialsNonExpired=" + isCredentialsNonExpired +
-            ", isEnabled=" + isEnabled +
+            ", password='" + "[HIDDEN]" + '\'' +
+            ", isAccountNonExpired=" + accountNonExpired +
+            ", isAccountNonLocked=" + accountNonLocked +
+            ", isCredentialsNonExpired=" + credentialsNonExpired +
+            ", isEnabled=" + enabled +
+            ", isActivated=" + activated +
             ", authorities=" + authorities +
             '}';
     }
