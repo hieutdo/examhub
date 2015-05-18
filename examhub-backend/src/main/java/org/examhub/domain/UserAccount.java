@@ -41,7 +41,7 @@ public class UserAccount implements UserDetails, Serializable {
     @Column(nullable = false)
     private boolean activated;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_authority",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},

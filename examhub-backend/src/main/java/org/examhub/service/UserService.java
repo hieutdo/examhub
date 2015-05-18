@@ -11,6 +11,4 @@ public interface UserService {
     List<UserAccount> getAllUsers();
 
     UserAccount getUser(String username);
-
-    UserAccount getUserWithAuthorities(String username);
 }
