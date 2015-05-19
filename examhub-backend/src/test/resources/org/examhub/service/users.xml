@@ -1,0 +1,14 @@
+<dataset>
+    <user_account id="1" username="system" password="$2a$08$DRe6irPk4ddsuGDokATuw.mTnVCIHnVt1STR2YtuVb0SzwJHvjh3." account_non_expired="true" account_non_locked="true" credentials_non_expired="true" enabled="true" activated="true"/>
+    <user_account id="2" username="admin" password="$2a$08$gYN35i.P3XZ57QAETrF/ue.nwSA7mAwl0F63VHFC/oiNdEbFFkazq" account_non_expired="true" account_non_locked="true" credentials_non_expired="true" enabled="true" activated="true"/>
+    <user_account id="3" username="user" password="$2a$08$GEZLuP5PFj7THNZKolddz.1voaMKWJJUqwCQ88V6/cTqZssab.ety" account_non_expired="true" account_non_locked="true" credentials_non_expired="true" enabled="true" activated="true"/>
+
+    <authority name="ROLE_ADMIN" />
+    <authority name="ROLE_USER" />
+
+    <user_authority user_id="1" authority_name="ROLE_ADMIN" />
+    <user_authority user_id="1" authority_name="ROLE_USER" />
+    <user_authority user_id="2" authority_name="ROLE_ADMIN" />
+    <user_authority user_id="2" authority_name="ROLE_USER" />
+    <user_authority user_id="3" authority_name="ROLE_USER" />
+</dataset>
