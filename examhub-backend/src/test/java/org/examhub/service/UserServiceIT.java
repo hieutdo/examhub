@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -123,5 +125,42 @@ public class UserServiceIT {
             .andExpect(jsonPath("$.id", is(3)))
             .andExpect(jsonPath("$.username", is("user")))
             .andExpect(jsonPath("$.authorities[*].name", containsInAnyOrder("ROLE_USER")));
+    }
+
+    @Test
+    @DatabaseSetup("users.xml")
+    @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void userAuthentication_ShouldReturnOkIfUserProvidesCorrectCredentials() throws Exception {
+        this.mockMvc.perform(post("/api/v1/authenticate")
+            .with(csrf().asHeader())
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("username", "user")
+            .param("password", "user"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(""));
+    }
+
+    @Test
+    @DatabaseSetup("users.xml")
+    @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void userAuthentication_ShouldReturn401ErrorIfUserProvidesWrongCredentials() throws Exception {
+        this.mockMvc.perform(post("/api/v1/authenticate")
+            .with(csrf().asHeader())
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("username", "user")
+            .param("password", "foo"))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DatabaseSetup("users.xml")
+    @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void userAuthentication_ShouldReturn401ErrorIfGivenUsernameNotFound() throws Exception {
+        this.mockMvc.perform(post("/api/v1/authenticate")
+            .with(csrf().asHeader())
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("username", "foo")
+            .param("password", "bar"))
+            .andExpect(status().isUnauthorized());
     }
 }
