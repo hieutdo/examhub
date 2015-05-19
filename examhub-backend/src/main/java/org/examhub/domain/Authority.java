@@ -1,5 +1,6 @@
 package org.examhub.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Column;
@@ -33,6 +34,7 @@ public class Authority implements GrantedAuthority, Serializable {
         this.name = name;
     }
 
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return getName();
