@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
     UserAccount findByUsernameIgnoreCase(String username);
+
+    UserAccount findByEmailIgnoreCase(String email);
 }

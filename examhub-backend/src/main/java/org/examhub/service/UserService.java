@@ -13,6 +13,10 @@ public interface UserService {
     @PreAuthorize("hasRole('ADMIN')")
     List<UserAccount> getAllUsers();
 
-    @PostAuthorize("returnObject.username == principal.username or hasRole('ADMIN')")
-    UserAccount getUser(String username);
+//    @PostAuthorize("(isAuthenticated() and returnObject.username == principal.username) or hasRole('ADMIN')")
+    UserAccount getUserByUsername(String username);
+
+    UserAccount getUserByEmail(String email);
+
+    UserAccount createNewUser(String username, String password, String email);
 }

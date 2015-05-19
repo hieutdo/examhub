@@ -56,25 +56,22 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // @formatter:off
         http
             .csrf()
-        .and()
+                .and()
             .addFilterAfter(new CsrfCookieGeneratorFilter(), CsrfFilter.class)
-            .exceptionHandling()
-            .authenticationEntryPoint((request, response, authException) -> {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            })
-        .and()
-            .authorizeRequests()
-            .antMatchers("/api/**").authenticated()
-        .and()
+                .exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
+                .and()
             .formLogin()
-            .loginProcessingUrl("/api/v1/authenticate")
-            .successHandler((request, response, authentication) -> {
-                response.setStatus(HttpServletResponse.SC_OK);
-            })
-            .failureHandler((request, response, exception) -> {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            })
-            .permitAll();
+                .loginProcessingUrl("/api/v1/authenticate")
+                .successHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
+                .failureHandler((request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .permitAll()
+                .and()
+            .authorizeRequests()
+                .antMatchers("/api/v1/register").permitAll()
+                .antMatchers("/api/**").authenticated();
         // @formatter:on
     }
 }

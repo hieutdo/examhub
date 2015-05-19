@@ -6,6 +6,10 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import org.examhub.ExamHubApplication;
 import org.examhub.config.Constants;
+import org.examhub.domain.UserAccount;
+import org.examhub.repository.UserAccountRepository;
+import org.examhub.utils.JsonUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +29,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -40,6 +45,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         TransactionDbUnitTestExecutionListener.class
     })
 public class UserServiceIT {
+
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     @Autowired
     private WebApplicationContext wac;
@@ -162,5 +170,28 @@ public class UserServiceIT {
             .param("username", "foo")
             .param("password", "bar"))
             .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DatabaseSetup("users.xml")
+    public void userRegistration_ShouldCreateANewUserWhenNoUsernameOrEmailExist() throws Exception {
+        UserAccount newUser = new UserAccount();
+        newUser.setUsername("newUser");
+        newUser.setPassword("123456");
+        newUser.setEmail("newUser@mail.com");
+
+        this.mockMvc.perform(post("/api/v1/register")
+            .with(csrf().asHeader())
+            .contentType(Constants.APPLICATION_JSON_UTF8)
+            .content(JsonUtils.convertObjectToJsonBytes(newUser)))
+            .andExpect(status().isCreated())
+            .andExpect(content().string(""));
+
+        UserAccount result = userAccountRepository.findByUsernameIgnoreCase("newUser");
+        Assert.assertThat(result, allOf(
+            hasProperty("id", is(4L)),
+            hasProperty("username", is("newUser")),
+            hasProperty("email", is("newUser@mail.com"))
+        ));
     }
 }

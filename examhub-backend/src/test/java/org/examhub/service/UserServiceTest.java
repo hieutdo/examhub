@@ -99,7 +99,7 @@ public class UserServiceTest {
     @Test
     public void getUser_ShouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
         thrown.expect(AuthenticationCredentialsNotFoundException.class);
-        userService.getUser("foo");
+        userService.getUserByUsername("foo");
     }
 
     @Test
@@ -111,7 +111,7 @@ public class UserServiceTest {
         when(userAccountRepository.findByUsernameIgnoreCase("user2")).thenReturn(user2);
 
         thrown.expect(AccessDeniedException.class);
-        userService.getUser("user2");
+        userService.getUserByUsername("user2");
     }
 
     @Test
@@ -122,7 +122,7 @@ public class UserServiceTest {
 
         when(userAccountRepository.findByUsernameIgnoreCase("user")).thenReturn(user);
 
-        assertThat(userService.getUser("user"), is(user));
+        assertThat(userService.getUserByUsername("user"), is(user));
     }
 
     @Test
@@ -133,6 +133,6 @@ public class UserServiceTest {
 
         when(userAccountRepository.findByUsernameIgnoreCase("user")).thenReturn(user);
 
-        assertThat(userService.getUser("user"), is(user));
+        assertThat(userService.getUserByUsername("user"), is(user));
     }
 }

@@ -41,6 +41,9 @@ public class UserAccount implements UserDetails, Serializable {
     @Column(nullable = false)
     private boolean activated;
 
+    @Column(length = 255, unique = true)
+    private String email;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_authority",
@@ -117,6 +120,14 @@ public class UserAccount implements UserDetails, Serializable {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
