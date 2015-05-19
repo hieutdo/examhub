@@ -16,8 +16,12 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private final UserAccountRepository userAccountRepository;
+
     @Autowired
-    private UserAccountRepository userAccountRepository;
+    public UserServiceImpl(UserAccountRepository userAccountRepository) {
+        this.userAccountRepository = userAccountRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

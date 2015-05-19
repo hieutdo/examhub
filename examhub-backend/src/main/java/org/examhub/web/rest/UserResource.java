@@ -17,8 +17,12 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class UserResource {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserResource(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<UserAccount> getAllUsers() {
