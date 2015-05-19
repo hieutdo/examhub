@@ -83,4 +83,45 @@ public class UserServiceIT {
             .andExpect(jsonPath("$[2].username", is("user")))
             .andExpect(jsonPath("$[2].authorities[*].name", containsInAnyOrder("ROLE_USER")));
     }
+
+    @Test
+    public void getUser_ShouldReturn401ErrorWhenUserIsNotAuthenticated() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/user"))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithUserDetails("user")
+    @DatabaseSetup("users.xml")
+    @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void getUser_ShouldReturn403ErrorWhenUserIsAccessingSomeoneElseAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/admin"))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails("user")
+    @DatabaseSetup("users.xml")
+    @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void getUser_ShouldAnUserAccountWhenUserIsAccessingHisOwnAccount() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/user"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(Constants.APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$.id", is(3)))
+            .andExpect(jsonPath("$.username", is("user")))
+            .andExpect(jsonPath("$.authorities[*].name", containsInAnyOrder("ROLE_USER")));
+    }
+
+    @Test
+    @WithUserDetails("admin")
+    @DatabaseSetup("users.xml")
+    @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void getUser_ShouldAnUserAccountWhenUserIsAccessingSomeoneElseAccountButHasRoleAdmin() throws Exception {
+        this.mockMvc.perform(get("/api/v1/users/user"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(Constants.APPLICATION_JSON_UTF8))
+            .andExpect(jsonPath("$.id", is(3)))
+            .andExpect(jsonPath("$.username", is("user")))
+            .andExpect(jsonPath("$.authorities[*].name", containsInAnyOrder("ROLE_USER")));
+    }
 }

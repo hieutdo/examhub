@@ -95,4 +95,44 @@ public class UserServiceTest {
             )
         ));
     }
+
+    @Test
+    public void getUser_ShouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
+        thrown.expect(AuthenticationCredentialsNotFoundException.class);
+        userService.getUser("foo");
+    }
+
+    @Test
+    @WithMockUser(username = "user1", roles = "USER")
+    public void getUser_ShouldThrowExceptionWhenUserIsAccessingSomeoneElseAccount() throws Exception {
+        UserAccount user2 = new UserAccount();
+        user2.setUsername("user2");
+
+        when(userAccountRepository.findByUsernameIgnoreCase("user2")).thenReturn(user2);
+
+        thrown.expect(AccessDeniedException.class);
+        userService.getUser("user2");
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    public void getUser_ShouldReturnAnUserAccountWhenUserIsAccessingHisOwnAccount() throws Exception {
+        UserAccount user = new UserAccount();
+        user.setUsername("user");
+
+        when(userAccountRepository.findByUsernameIgnoreCase("user")).thenReturn(user);
+
+        assertThat(userService.getUser("user"), is(user));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    public void getUser_ShouldReturnAnUserAccountWhenUserIsAccessingSomeoneElseAccountButHasRoleAdmin() throws Exception {
+        UserAccount user = new UserAccount();
+        user.setUsername("user");
+
+        when(userAccountRepository.findByUsernameIgnoreCase("user")).thenReturn(user);
+
+        assertThat(userService.getUser("user"), is(user));
+    }
 }
