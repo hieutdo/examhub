@@ -11,10 +11,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -43,26 +41,24 @@ public class UserServiceTest {
 
     @Test
     public void testCreateNewUser() throws Exception {
-        String username = "newUser";
-        String password = "123456";
-        String passwordHash = "654321";
-        String email = "abc@mail.com";
-        Authority userRole = new Authority("ROLE_USER");
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(userRole);
-        UserAccount expectedUser = new UserAccount(username, passwordHash, email, authorities);
+        final String username = "newUser";
+        final String password = "123456";
+        final String passwordHash = "654321";
+        final String email = "abc@mail.com";
+        final Authority roleUser = new Authority("ROLE_USER");
 
         when(passwordEncoder.encode(password)).thenReturn(passwordHash);
-        when(authorityRepository.findOne("ROLE_USER")).thenReturn(userRole);
-        when(userAccountRepository.save(any(UserAccount.class))).thenReturn(expectedUser);
+        when(authorityRepository.findOne("ROLE_USER")).thenReturn(roleUser);
+        when(userAccountRepository.save(any(UserAccount.class))).thenAnswer(i -> i.getArgumentAt(0, UserAccount.class));
 
-        UserAccount actualUser = userService.createNewUser(username, password, email);
+        final UserAccount newUser = userService.createNewUser(username, password, email);
 
-        assertThat(actualUser, allOf(
+        assertThat(newUser, allOf(
             notNullValue(),
             hasProperty("username", is(username)),
             hasProperty("password", is(passwordHash)),
             hasProperty("email", is(email)),
+            hasProperty("authorities", contains(roleUser)),
             hasProperty("accountNonExpired", is(true)),
             hasProperty("accountNonLocked", is(true)),
             hasProperty("credentialsNonExpired", is(true)),
