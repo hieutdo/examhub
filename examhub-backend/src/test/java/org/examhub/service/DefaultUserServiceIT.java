@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         WithSecurityContextTestExecutionListener.class,
         TransactionDbUnitTestExecutionListener.class
     })
-public class UserServiceIT {
+public class DefaultUserServiceIT {
 
     @Autowired
     private UserAccountRepository userAccountRepository;

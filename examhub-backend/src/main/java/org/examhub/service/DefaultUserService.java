@@ -1,4 +1,4 @@
-package org.examhub.service.impl;
+package org.examhub.service;
 
 import org.examhub.domain.Authority;
 import org.examhub.domain.UserAccount;
@@ -19,7 +19,7 @@ import java.util.Set;
  */
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class DefaultUserService implements UserService {
 
     private final UserAccountRepository userAccountRepository;
 
@@ -28,7 +28,9 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserAccountRepository userAccountRepository, AuthorityRepository authorityRepository, PasswordEncoder passwordEncoder) {
+    public DefaultUserService(UserAccountRepository userAccountRepository,
+                              AuthorityRepository authorityRepository,
+                              PasswordEncoder passwordEncoder) {
         this.userAccountRepository = userAccountRepository;
         this.authorityRepository = authorityRepository;
         this.passwordEncoder = passwordEncoder;
@@ -54,11 +56,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAccount createNewUser(String username, String password, String email) {
+        String passwordHash = passwordEncoder.encode(password);
         // assign ROLE_USER to new user
         Authority roleUser = authorityRepository.findOne("ROLE_USER");
         Set<Authority> authorities = new HashSet<>();
         authorities.add(roleUser);
 
-        return userAccountRepository.save(new UserAccount(username, passwordEncoder.encode(password), email, authorities));
+        return userAccountRepository.save(new UserAccount(username, passwordHash, email, authorities));
     }
 }

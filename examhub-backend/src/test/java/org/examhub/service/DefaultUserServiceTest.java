@@ -4,7 +4,6 @@ import org.examhub.domain.Authority;
 import org.examhub.domain.UserAccount;
 import org.examhub.repository.AuthorityRepository;
 import org.examhub.repository.UserAccountRepository;
-import org.examhub.service.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,12 +14,13 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.*;
 
 /**
  * @author Hieu Do
  */
-public class UserServiceTest {
+public class DefaultUserServiceTest {
 
     @Mock
     private UserAccountRepository userAccountRepository;
@@ -31,12 +31,12 @@ public class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    private UserService userService;
+    private DefaultUserService userService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        userService = new UserServiceImpl(userAccountRepository, authorityRepository, passwordEncoder);
+        userService = new DefaultUserService(userAccountRepository, authorityRepository, passwordEncoder);
     }
 
     @Test
@@ -65,5 +65,9 @@ public class UserServiceTest {
             hasProperty("enabled", is(true)),
             hasProperty("activated", is(false))
         ));
+
+        verify(passwordEncoder).encode(password);
+        verify(authorityRepository).findOne(anyString());
+        verify(userAccountRepository).save(any(UserAccount.class));
     }
 }
