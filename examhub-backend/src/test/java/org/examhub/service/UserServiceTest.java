@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Hieu Do
@@ -94,24 +94,6 @@ public class UserServiceTest {
                 hasProperty("username", is("user2"))
             )
         ));
-    }
-
-    @Test
-    public void getUser_ShouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
-        thrown.expect(AuthenticationCredentialsNotFoundException.class);
-        userService.getUserByUsername("foo");
-    }
-
-    @Test
-    @WithMockUser(username = "user1", roles = "USER")
-    public void getUser_ShouldThrowExceptionWhenUserIsAccessingSomeoneElseAccount() throws Exception {
-        UserAccount user2 = new UserAccount();
-        user2.setUsername("user2");
-
-        when(userAccountRepository.findByUsernameIgnoreCase("user2")).thenReturn(user2);
-
-        thrown.expect(AccessDeniedException.class);
-        userService.getUserByUsername("user2");
     }
 
     @Test

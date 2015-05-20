@@ -9,7 +9,6 @@ import org.examhub.config.Constants;
 import org.examhub.domain.UserAccount;
 import org.examhub.repository.UserAccountRepository;
 import org.examhub.utils.JsonUtils;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,10 +25,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.junit.Assert.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -98,15 +98,6 @@ public class UserServiceIT {
     public void getUser_ShouldReturn401ErrorWhenUserIsNotAuthenticated() throws Exception {
         this.mockMvc.perform(get("/api/v1/users/user"))
             .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithUserDetails("user")
-    @DatabaseSetup("users.xml")
-    @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
-    public void getUser_ShouldReturn403ErrorWhenUserIsAccessingSomeoneElseAccount() throws Exception {
-        this.mockMvc.perform(get("/api/v1/users/admin"))
-            .andExpect(status().isForbidden());
     }
 
     @Test
@@ -187,8 +178,7 @@ public class UserServiceIT {
             .andExpect(status().isCreated())
             .andExpect(content().string(""));
 
-        UserAccount result = userAccountRepository.findByUsernameIgnoreCase("newUser");
-        Assert.assertThat(result, allOf(
+        assertThat(userAccountRepository.findByUsernameIgnoreCase("newUser"), allOf(
             hasProperty("id", is(4L)),
             hasProperty("username", is("newUser")),
             hasProperty("email", is("newUser@mail.com"))
