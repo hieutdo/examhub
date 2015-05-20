@@ -6,15 +6,15 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import org.examhub.ExamHubApplication;
 import org.examhub.config.Constants;
+import org.examhub.domain.Authority;
 import org.examhub.domain.UserAccount;
 import org.examhub.repository.UserAccountRepository;
-import org.examhub.utils.JsonUtils;
+import org.examhub.util.JsonUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
@@ -24,12 +24,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Arrays;
+
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.Assert.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -130,11 +133,10 @@ public class DefaultUserServiceIT {
     @DatabaseSetup("users.xml")
     @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void userAuthentication_ShouldReturnOkIfUserProvidesCorrectCredentials() throws Exception {
-        this.mockMvc.perform(post("/api/v1/authenticate")
-            .with(csrf().asHeader())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .param("username", "user")
-            .param("password", "user"))
+        this.mockMvc.perform(formLogin("/api/v1/authenticate")
+            .user(Constants.FORM_LOGIN_PARAM_USERNAME, "user")
+            .password(Constants.FORM_LOGIN_PARAM_PASSWORD, "user"))
+            .andExpect(authenticated().withUsername("user").withAuthorities(Arrays.asList(new Authority("ROLE_USER"))))
             .andExpect(status().isOk())
             .andExpect(content().string(""));
     }
@@ -143,23 +145,22 @@ public class DefaultUserServiceIT {
     @DatabaseSetup("users.xml")
     @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void userAuthentication_ShouldReturn401ErrorIfUserProvidesWrongCredentials() throws Exception {
-        this.mockMvc.perform(post("/api/v1/authenticate")
-            .with(csrf().asHeader())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .param("username", "user")
-            .param("password", "foo"))
-            .andExpect(status().isUnauthorized());
+        this.mockMvc.perform(formLogin("/api/v1/authenticate")
+            .user(Constants.FORM_LOGIN_PARAM_USERNAME, "user")
+            .password(Constants.FORM_LOGIN_PARAM_PASSWORD, "foo"))
+            .andExpect(unauthenticated())
+            .andExpect(status().isUnauthorized())
+            .andExpect(status().reason("Bad credentials"));
     }
 
     @Test
     @DatabaseSetup("users.xml")
     @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void userAuthentication_ShouldReturn401ErrorIfGivenUsernameNotFound() throws Exception {
-        this.mockMvc.perform(post("/api/v1/authenticate")
-            .with(csrf().asHeader())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .param("username", "foo")
-            .param("password", "bar"))
+        this.mockMvc.perform(formLogin("/api/v1/authenticate")
+            .user(Constants.FORM_LOGIN_PARAM_USERNAME, "foo")
+            .password(Constants.FORM_LOGIN_PARAM_PASSWORD, "bar"))
+            .andExpect(unauthenticated())
             .andExpect(status().isUnauthorized());
     }
 

@@ -12,6 +12,9 @@ public final class Constants {
         MediaType.APPLICATION_JSON.getType(),
         MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
+    public static final String FORM_LOGIN_PARAM_USERNAME = "username";
+    public static final String FORM_LOGIN_PARAM_PASSWORD = "password";
+
     private Constants() {
     }
 }

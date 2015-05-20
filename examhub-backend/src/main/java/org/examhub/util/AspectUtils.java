@@ -1,4 +1,4 @@
-package org.examhub.utils;
+package org.examhub.util;
 
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;

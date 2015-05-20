@@ -59,14 +59,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
             .addFilterAfter(new CsrfCookieGeneratorFilter(), CsrfFilter.class)
                 .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
+                .authenticationEntryPoint((request, response, exception) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
+                })
                 .and()
             .formLogin()
                 .loginProcessingUrl("/api/v1/authenticate")
-                .successHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
-                .failureHandler((request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-                .usernameParameter("username")
-                .passwordParameter("password")
+                .successHandler((request, response, authentication) -> {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                })
+                .failureHandler((request, response, exception) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
+                })
+                .usernameParameter(Constants.FORM_LOGIN_PARAM_USERNAME)
+                .passwordParameter(Constants.FORM_LOGIN_PARAM_PASSWORD)
                 .permitAll()
                 .and()
             .authorizeRequests()
