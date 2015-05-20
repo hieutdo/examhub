@@ -54,25 +54,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserAccount createNewUser(String username, String password, String email) {
-        String passwordHash = passwordEncoder.encode(password);
-
         // assign ROLE_USER to new user
         Authority roleUser = authorityRepository.findOne("ROLE_USER");
         Set<Authority> authorities = new HashSet<>();
         authorities.add(roleUser);
 
-        UserAccount userAccount = new UserAccount();
-        userAccount.setUsername(username);
-        userAccount.setPassword(passwordHash);
-        userAccount.setEmail(email);
-        userAccount.setAuthorities(authorities);
-        // default values
-        userAccount.setAccountNonExpired(true);
-        userAccount.setAccountNonLocked(true);
-        userAccount.setCredentialsNonExpired(true);
-        userAccount.setEnabled(true);
-        userAccount.setActivated(false);
-
-        return userAccountRepository.save(userAccount);
+        return userAccountRepository.save(new UserAccount(username, passwordEncoder.encode(password), email, authorities));
     }
 }

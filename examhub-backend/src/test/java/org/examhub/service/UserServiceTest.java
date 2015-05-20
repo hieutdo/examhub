@@ -1,120 +1,73 @@
 package org.examhub.service;
 
-import org.examhub.UnitTestConfiguration;
+import org.examhub.domain.Authority;
 import org.examhub.domain.UserAccount;
+import org.examhub.repository.AuthorityRepository;
 import org.examhub.repository.UserAccountRepository;
-import org.examhub.utils.AspectUtils;
+import org.examhub.service.impl.UserServiceImpl;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Hieu Do
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = UnitTestConfiguration.class)
-@TestExecutionListeners(
-    mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS,
-    listeners = {
-        WithSecurityContextTestExecutionListener.class
-    })
 public class UserServiceTest {
-
-    @Autowired
-    private UserService userService;
 
     @Mock
     private UserAccountRepository userAccountRepository;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    @Mock
+    private AuthorityRepository authorityRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    private UserService userService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ReflectionTestUtils.setField(AspectUtils.unwrapProxy(userService), "userAccountRepository", userAccountRepository);
+        userService = new UserServiceImpl(userAccountRepository, authorityRepository, passwordEncoder);
     }
 
     @Test
-    public void getAllUsers_ShouldThrowExceptionWhenUserIsNotAuthenticated() throws Exception {
-        thrown.expect(AuthenticationCredentialsNotFoundException.class);
-        userService.getAllUsers();
-    }
+    public void testCreateNewUser() throws Exception {
+        String username = "newUser";
+        String password = "123456";
+        String passwordHash = "654321";
+        String email = "abc@mail.com";
+        Authority userRole = new Authority("ROLE_USER");
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(userRole);
+        UserAccount expectedUser = new UserAccount(username, passwordHash, email, authorities);
 
-    @Test
-    @WithMockUser(roles = "USER")
-    public void getAllUsers_ShouldThrowExceptionWhenUserDoesNotHaveAdminRole() throws Exception {
-        thrown.expect(AccessDeniedException.class);
-        userService.getAllUsers();
-    }
+        when(passwordEncoder.encode(password)).thenReturn(passwordHash);
+        when(authorityRepository.findOne("ROLE_USER")).thenReturn(userRole);
+        when(userAccountRepository.save(any(UserAccount.class))).thenReturn(expectedUser);
 
-    @Test
-    @WithMockUser(roles = "ADMIN")
-    public void getAllUsers_ShouldReturnAListOfTwoUserAccountsWhenUserHasAdminRole() throws Exception {
-        UserAccount userAccount1 = new UserAccount();
-        userAccount1.setId(1L);
-        userAccount1.setUsername("user1");
+        UserAccount actualUser = userService.createNewUser(username, password, email);
 
-        UserAccount userAccount2 = new UserAccount();
-        userAccount2.setId(2L);
-        userAccount2.setUsername("user2");
-
-        when(userAccountRepository.findAll()).thenReturn(Arrays.asList(userAccount1, userAccount2));
-
-        List<UserAccount> userAccounts = userService.getAllUsers();
-
-        assertThat(userAccounts, hasSize(2));
-        assertThat(userAccounts, contains(
-            allOf(
-                hasProperty("id", is(1L)),
-                hasProperty("username", is("user1"))
-            ),
-            allOf(
-                hasProperty("id", is(2L)),
-                hasProperty("username", is("user2"))
-            )
+        assertThat(actualUser, allOf(
+            notNullValue(),
+            hasProperty("username", is(username)),
+            hasProperty("password", is(passwordHash)),
+            hasProperty("email", is(email)),
+            hasProperty("accountNonExpired", is(true)),
+            hasProperty("accountNonLocked", is(true)),
+            hasProperty("credentialsNonExpired", is(true)),
+            hasProperty("enabled", is(true)),
+            hasProperty("activated", is(false))
         ));
-    }
-
-    @Test
-    @WithMockUser(username = "user", roles = "USER")
-    public void getUser_ShouldReturnAnUserAccountWhenUserIsAccessingHisOwnAccount() throws Exception {
-        UserAccount user = new UserAccount();
-        user.setUsername("user");
-
-        when(userAccountRepository.findByUsernameIgnoreCase("user")).thenReturn(user);
-
-        assertThat(userService.getUserByUsername("user"), is(user));
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    public void getUser_ShouldReturnAnUserAccountWhenUserIsAccessingSomeoneElseAccountButHasRoleAdmin() throws Exception {
-        UserAccount user = new UserAccount();
-        user.setUsername("user");
-
-        when(userAccountRepository.findByUsernameIgnoreCase("user")).thenReturn(user);
-
-        assertThat(userService.getUserByUsername("user"), is(user));
     }
 }

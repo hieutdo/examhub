@@ -1,11 +1,9 @@
 package org.examhub.domain;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +24,9 @@ public class UserAccount implements UserDetails, Serializable {
     @Column(length = 255, nullable = false)
     private String password;
 
+    @Column(length = 255, unique = true)
+    private String email;
+
     @Column(nullable = false)
     private boolean accountNonExpired;
 
@@ -41,9 +42,6 @@ public class UserAccount implements UserDetails, Serializable {
     @Column(nullable = false)
     private boolean activated;
 
-    @Column(length = 255, unique = true)
-    private String email;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_authority",
@@ -51,6 +49,25 @@ public class UserAccount implements UserDetails, Serializable {
         inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")}
     )
     private Set<Authority> authorities = new HashSet<>();
+
+    public UserAccount() {
+    }
+
+    public UserAccount(String username, String password, String email, Set<Authority> authorities) {
+        this(username, password, email, authorities, true, true, true, true, false);
+    }
+
+    public UserAccount(String username, String password, String email, Set<Authority> authorities, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, boolean activated) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.authorities = authorities;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonLocked = accountNonLocked;
+        this.credentialsNonExpired = credentialsNonExpired;
+        this.enabled = enabled;
+        this.activated = activated;
+    }
 
     public Long getId() {
         return id;
@@ -76,6 +93,14 @@ public class UserAccount implements UserDetails, Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -120,14 +145,6 @@ public class UserAccount implements UserDetails, Serializable {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @Override
