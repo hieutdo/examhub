@@ -6,7 +6,6 @@
 
     <!-- Schema -->
     <include file="liquibase/schema/create_UserAccount_Authority_entities.xml"/>
-    <include file="liquibase/schema/add_email_field_to_UserAccount_entity.xml"/>
 
     <!-- Data -->
     <include file="liquibase/data/create_default_users.xml"/>

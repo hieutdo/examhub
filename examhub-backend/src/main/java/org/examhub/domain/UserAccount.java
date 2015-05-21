@@ -15,7 +15,7 @@ public class UserAccount implements UserDetails, Serializable {
     private static final long serialVersionUID = 5672765218653756757L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(length = 50, unique = true, nullable = false)
