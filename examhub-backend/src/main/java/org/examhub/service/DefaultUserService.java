@@ -2,9 +2,10 @@ package org.examhub.service;
 
 import org.examhub.domain.Authority;
 import org.examhub.domain.UserAccount;
+import org.examhub.exception.EmailAlreadyExistsException;
+import org.examhub.exception.UsernameAlreadyExistsException;
 import org.examhub.repository.AuthorityRepository;
 import org.examhub.repository.UserAccountRepository;
-import org.examhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,14 @@ public class DefaultUserService implements UserService {
 
     @Override
     public UserAccount createNewUser(String username, String password, String email) {
+        // check if username and email already exist in database
+        if (getUserByUsername(username) != null) {
+            throw new UsernameAlreadyExistsException(username);
+        }
+        if (getUserByEmail(email) != null) {
+            throw new EmailAlreadyExistsException(email);
+        }
+        // generate password hash
         String passwordHash = passwordEncoder.encode(password);
         // assign ROLE_USER to new user
         Authority roleUser = authorityRepository.findOne("ROLE_USER");

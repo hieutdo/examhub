@@ -3,6 +3,7 @@ package org.examhub.domain;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,7 @@ public class UserAccount implements UserDetails, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(length = 50, unique = true, nullable = false)
     private String username;
 

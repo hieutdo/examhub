@@ -15,11 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -33,6 +33,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ExamHubApplication.class)
-@WebAppConfiguration
+@WebIntegrationTest(randomPort = true)
 @TestExecutionListeners(
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS,
     listeners = {
@@ -184,5 +185,23 @@ public class DefaultUserServiceIT {
             hasProperty("username", is("newUser")),
             hasProperty("email", is("newUser@mail.com"))
         ));
+    }
+
+    @Test
+    @DatabaseSetup("users.xml")
+    @ExpectedDatabase(value = "users.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void userRegistration_ShouldReturnBadRequestError400WhenUsernameAlreadyExist() throws Exception {
+        UserAccount newUser = new UserAccount();
+        newUser.setUsername("user");
+        newUser.setPassword("user");
+        newUser.setEmail("newUser@mail.com");
+
+        this.mockMvc.perform(post("/api/v1/register")
+            .with(csrf().asHeader())
+            .contentType(Constants.APPLICATION_JSON_UTF8)
+            .content(JsonUtils.convertObjectToJsonBytes(newUser)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("The username 'user' already exists. Please choose another one."));
     }
 }
